@@ -4,7 +4,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { CheckCircle, XCircle, Users, AlertTriangle, Eye, HardDrive, Cpu, Monitor, Wifi, LogOut, UserPlus, Settings, Search, ExternalLink } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,6 @@ import vezanLogo from "@/assets/vezan-logo-new.png";
 import { UserRegistrationModal } from "@/components/UserRegistrationModal";
 import { RemoteAccessModal } from "@/components/RemoteAccessModal";
 import { differenceInDays } from "date-fns";
-import axios from "axios";
 
 // Interface para tipagem dos dados dos clientes
 interface Client {
@@ -49,6 +48,150 @@ interface RemoteAccess {
   nomepc: string;
   senha: string;
 }
+
+// Dados Ficticios dos clientes
+const realClients: Client[] = [{
+  id: "2",
+  cnpj: "48.420.571/0001-01",
+  razao: "SUPERMERCADO SANTIAGO LTDA",
+  regime: "Lucro Real",
+  statussos: "ATIVO",
+  hdtotal: "232,23 GB",
+  hdlivre: "120,22 GB",
+  processador: "Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz",
+  memoria: "8 GB",
+  data: "29/07/2025",
+  hora: "13:00:46",
+  revenda: "Brvatech",
+  datamonitor: "29/07/2025",
+  horamonitor: "21:55:14",
+  tipoconexao: "DESKTOP",
+  versaosos: "1.11"
+}, {
+  id: "3",
+  cnpj: "36.234.527/0001-28",
+  razao: "SUPERMERCADO TERRAL LTDA",
+  regime: "Simples Nacional",
+  statussos: "ATIVO",
+  hdtotal: "222,95 GB",
+  hdlivre: "124,31 GB",
+  processador: "Intel(R) Core(TM) i3-3227U CPU @ 1.90GHz",
+  memoria: "4 GB",
+  data: "15/07/2025",
+  hora: "19:42:43",
+  revenda: "Brvatech",
+  datamonitor: "15/07/2025",
+  horamonitor: "19:43:16",
+  tipoconexao: "DESKTOP",
+  versaosos: "1.11"
+}, {
+  id: "4",
+  cnpj: "34.793.336/0001-70",
+  razao: "DAMIAN SILVA COMERCIO DE GENEROS ALIMENTICIOS LTDA",
+  regime: "Lucro Real",
+  statussos: "ATIVO",
+  hdtotal: "930,75 GB",
+  hdlivre: "788,05 GB",
+  processador: "12th Gen Intel(R) Core(TM) i5-12400",
+  memoria: "16 GB",
+  data: "23/05/2025",
+  hora: "17:37:10",
+  revenda: "Brvatech",
+  datamonitor: "02/07/2025",
+  horamonitor: "13:58:02",
+  tipoconexao: "DESKTOP",
+  versaosos: "1.11"
+}, {
+  id: "5",
+  cnpj: "38.218.052/0001-01",
+  razao: "WILLIAM AUTH",
+  regime: "Lucro Real",
+  statussos: "ATIVO",
+  hdtotal: "426,84 GB",
+  hdlivre: "228,58 GB",
+  processador: "Intel(R) Core(TM) i3-10100F CPU @ 3.60GHz",
+  memoria: "14 GB",
+  data: "29/07/2025",
+  hora: "13:00:03",
+  revenda: "Brvatech",
+  datamonitor: "29/07/2025",
+  horamonitor: "21:55:12",
+  tipoconexao: "DESKTOP",
+  versaosos: "1.11"
+}, {
+  id: "11",
+  cnpj: "37.228.216/0001-19",
+  razao: "MERCADO E ACOUGUE ROMAR LTDA",
+  regime: "Lucro Real",
+  statussos: "ATIVO",
+  hdtotal: "223,04 GB",
+  hdlivre: "143,07 GB",
+  processador: "AMD FX(tm)-6300 Six-Core Processor",
+  memoria: "3 GB",
+  data: "29/07/2025",
+  hora: "13:01:17",
+  revenda: "Vezan",
+  datamonitor: "29/07/2025",
+  horamonitor: "20:09:10",
+  tipoconexao: "DESKTOP",
+  versaosos: "1.11"
+}, {
+  id: "33",
+  cnpj: "00.740.657/0001-95",
+  razao: "SUPERMERCADO FARIAS LTDA",
+  regime: "Lucro Real",
+  statussos: "ATIVO",
+  hdtotal: "934,62 GB",
+  hdlivre: "877,98 GB",
+  processador: "Intel(R) Pentium(R) Gold G6405T CPU @ 3.50GHz",
+  memoria: "8 GB",
+  data: "29/07/2025",
+  hora: "13:00:06",
+  revenda: "Vezan",
+  datamonitor: "29/07/2025",
+  horamonitor: "21:55:07",
+  tipoconexao: "DESKTOP",
+  versaosos: "1.11"
+}, {
+  id: "43",
+  cnpj: "44.278.053/0001-44",
+  razao: "SUPER ECONOMIA BARRA DO SUL LTDA",
+  regime: "Lucro Real",
+  statussos: "ATIVO",
+  hdtotal: "237,87 GB",
+  hdlivre: "142,09 GB",
+  processador: "Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz",
+  memoria: "8 GB",
+  data: "29/07/2025",
+  hora: "13:00:16",
+  revenda: "Vezan",
+  datamonitor: "29/07/2025",
+  horamonitor: "21:51:38",
+  tipoconexao: "DESKTOP",
+  versaosos: "1.11"
+}, {
+  id: "26",
+  cnpj: "52.860.471/0001-73",
+  razao: "RODRIS MERCADO",
+  regime: "Simples Nacional",
+  statussos: "INATIVO",
+  hdtotal: "237,23 GB",
+  hdlivre: "57,34 GB",
+  processador: "Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz",
+  memoria: "8 GB",
+  data: "19/12/2024",
+  hora: "11:22:56",
+  revenda: "Brvatech",
+  datamonitor: "09/03/2025",
+  horamonitor: "13:37:40",
+  tipoconexao: "DESKTOP",
+  versaosos: "1.10",
+  conta: "testeapi",
+  codigoautorizacao: "b0c7a292-42c5-4421-9821-205a3a3a7278",
+  servidor: "https://bravatech-getcard01.getcard.uniplusweb.com",
+  cnae: "4722901",
+  uf: "SC"
+}];
 
 // Dados fictícios de acessos remotos
 const remoteAccesses: RemoteAccess[] = [
@@ -135,32 +278,6 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
-
-// Dados dos clientes Banco Mysql
-  const [realClients, setRealClients] = useState<Client[]>([]);
-
-useEffect(() => {
-  axios.get("http://localhost:3000/clientes") // ou sua rota correta
-    .then(response => {
-      setRealClients(response.data); // assume que data tem o array igual
-    })
-    .catch(error => {
-      console.error("Erro ao buscar os clientes:", error);
-    });
-}, []);
-  // Dados dos Acessos Banco Mysql
-  const [remoteAccesses, setRemoteAccesses] = useState<RemoteAccess[]>([]);
-
-  useEffect(() => {
-    axios.get("http://localhost:3000/acessos")
-      .then(response => {
-        setRemoteAccesses(response.data);
-      })
-      .catch(error => {
-        console.error("Erro ao buscar os acessos remotos:", error);
-      });
-  }, []);
-
 
   // Agrupar clientes por revenda
   const clientsByRevenda = realClients.reduce((acc, client) => {
